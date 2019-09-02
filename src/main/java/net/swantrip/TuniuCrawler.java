@@ -22,9 +22,21 @@ public class TuniuCrawler {
 	@Autowired
 	private NoteService noteService;
 
-	public void crawl() {
+	public void crawl_all() {
+		int page = 1;
+		int pageSize = 100;
 
-		String listurl = getListUrl(1, 10);
+		int totalCount = getTotalCount();
+		int pageCount = totalCount / pageSize + (totalCount % pageSize > 0 ? 1 : 0);
+		while (page <= pageCount) {
+			crawl(page, pageSize);
+			page++;
+		}
+	}
+
+	public void crawl(int page, int pageSize) {
+
+		String listurl = getListUrl(page, pageSize);
 
 		AjaxList list = restTemplate.getForObject(listurl, AjaxList.class);
 		log.warn(list);
@@ -50,6 +62,12 @@ public class TuniuCrawler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public int getTotalCount() {
+		String listurl = getListUrl(1, 1);
+		AjaxList list = restTemplate.getForObject(listurl, AjaxList.class);
+		return list.getData().getTotalCount();
 	}
 
 	private String getListUrl(int page, int size) {

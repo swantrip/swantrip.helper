@@ -40,7 +40,7 @@ public class SwantripApplication implements CommandLineRunner {
 			log.error("no args");
 		} else {
 		}
-//		tuniuCrawler.crawl();
+//		tuniuCrawler.crawl_all();
 		output.out();
 	}
 }
