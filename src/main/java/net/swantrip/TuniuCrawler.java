@@ -31,16 +31,14 @@ public class TuniuCrawler {
 		int totalCount = getTotalCount();
 		int pageCount = totalCount / pageSize + (totalCount % pageSize > 0 ? 1 : 0);
 		while (page <= pageCount) {
-			crawl(page, pageSize);
+			if (!crawl(page, pageSize)) {
+				return;
+			}
 			page++;
-//			try {
-//				Thread.sleep(1000 * 60);
-//			} catch (InterruptedException e) {
-//			}
 		}
 	}
 
-	public void crawl(int page, int pageSize) {
+	public boolean crawl(int page, int pageSize) {
 
 		String listurl = getListUrl(page, pageSize);
 
@@ -71,11 +69,17 @@ public class TuniuCrawler {
 				note.setTags(tags);
 				note.setContent(content);
 
+				if (StringUtils.isEmpty(content)) {
+					log.error("not found:" + originUrl);
+					return false;
+				}
+
 				noteService.save(note);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		return true;
 	}
 
 	public int getPageCount(int pageSize) {

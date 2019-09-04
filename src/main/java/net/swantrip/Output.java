@@ -1,5 +1,6 @@
 package net.swantrip;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,10 @@ public class Output {
 	public void outHexo() {
 		for (Note note : noteService.list()) {
 			String filepath = path + note.getId() + ".html";
+			if (new File(filepath).exists()) {
+				continue;
+			}
+
 			String title = note.getName();
 			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(note.getPublishTime());
 			String tags = "[[\"" + note.getTags().replace(",", "\"],[\"") + "\"]]";
