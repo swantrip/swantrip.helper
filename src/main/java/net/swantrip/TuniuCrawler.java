@@ -7,8 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -24,13 +26,17 @@ public class TuniuCrawler {
 
 	public void crawl_all() {
 		int page = 1;
-		int pageSize = 100;
+		int pageSize = 50;
 
 		int totalCount = getTotalCount();
 		int pageCount = totalCount / pageSize + (totalCount % pageSize > 0 ? 1 : 0);
 		while (page <= pageCount) {
 			crawl(page, pageSize);
 			page++;
+//			try {
+//				Thread.sleep(1000 * 60);
+//			} catch (InterruptedException e) {
+//			}
 		}
 	}
 
@@ -46,14 +52,22 @@ public class TuniuCrawler {
 			if (noteService.existsByOriginUrl(originUrl)) {
 				continue;
 			}
-
+			note.setName(note.getName().replace("途牛", "天鹅之旅"));
+			note.setSummary(note.getSummary().replace("途牛", "天鹅之旅"));
 			note.setOriginUrl(originUrl);
 
 			try {
 				Document _doc = Jsoup.connect(originUrl).get();
 				String tags = _doc.select(".tag-item").stream().map(e -> e.text().replace("#", ""))
 						.collect(Collectors.joining(","));
-				String content = _doc.select(".travel-main").outerHtml();
+				Elements elements = _doc.select(".travel-main");
+				elements.select("img").forEach(e -> {
+					String src = e.attr("data-src");
+					if (StringUtils.hasText(src)) {
+						e.attr("src", src);
+					}
+				});
+				String content = elements.outerHtml().replace("途牛", "天鹅之旅");
 				note.setTags(tags);
 				note.setContent(content);
 
@@ -62,6 +76,12 @@ public class TuniuCrawler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public int getPageCount(int pageSize) {
+		String listurl = getListUrl(1, pageSize);
+		AjaxList list = restTemplate.getForObject(listurl, AjaxList.class);
+		return list.getData().getPageCount();
 	}
 
 	public int getTotalCount() {

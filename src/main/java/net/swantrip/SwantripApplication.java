@@ -41,6 +41,6 @@ public class SwantripApplication implements CommandLineRunner {
 		} else {
 		}
 //		tuniuCrawler.crawl_all();
-		output.out();
+		output.outHexo();
 	}
 }
