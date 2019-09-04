@@ -43,7 +43,7 @@ public class TuniuCrawler {
 		String listurl = getListUrl(page, pageSize);
 
 		AjaxList list = restTemplate.getForObject(listurl, AjaxList.class);
-		log.warn(list);
+		// log.warn(list);
 
 		for (Note note : list.getData().getRows()) {
 			String originUrl = getDetailUrl(note.getId());

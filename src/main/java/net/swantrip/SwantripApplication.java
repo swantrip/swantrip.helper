@@ -39,8 +39,11 @@ public class SwantripApplication implements CommandLineRunner {
 		if (args == null || args.length == 0) {
 			log.error("no args");
 		} else {
+			if ("crawl".equals(args[0])) {
+				tuniuCrawler.crawl_all();
+			} else if ("out".equals(args[0])) {
+				output.outHexo();
+			}
 		}
-//		tuniuCrawler.crawl_all();
-		output.outHexo();
 	}
 }
