@@ -30,9 +30,6 @@ public class SwantripApplication implements CommandLineRunner {
 	@Autowired
 	private TuniuCrawler tuniuCrawler;
 
-	@Autowired
-	private Output output;
-
 	@Override
 	public void run(String... args) throws Exception {
 		log.warn("application run");
@@ -41,8 +38,6 @@ public class SwantripApplication implements CommandLineRunner {
 		} else {
 			if ("crawl".equals(args[0])) {
 				tuniuCrawler.crawl_all();
-			} else if ("out".equals(args[0])) {
-				output.outHexo();
 			}
 		}
 	}
