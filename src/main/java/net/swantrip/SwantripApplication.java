@@ -10,6 +10,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
+import net.swantrip.chouti.ChoutiCrawler;
+
 @SpringBootApplication
 public class SwantripApplication implements CommandLineRunner {
 
@@ -29,16 +31,20 @@ public class SwantripApplication implements CommandLineRunner {
 
 	@Autowired
 	private TuniuCrawler tuniuCrawler;
+	
+	@Autowired
+	private ChoutiCrawler choutiCrawler;
 
 	@Override
 	public void run(String... args) throws Exception {
 		log.warn("application run");
-		if (args == null || args.length == 0) {
-			log.error("no args");
-		} else {
-			if ("crawl".equals(args[0])) {
-				tuniuCrawler.crawl_all();
-			}
-		}
+		choutiCrawler.crawl_all();
+//		if (args == null || args.length == 0) {
+//			log.error("no args");
+//		} else {
+//			if ("crawl".equals(args[0])) {
+//				tuniuCrawler.crawl_all();
+//			}
+//		}
 	}
 }
